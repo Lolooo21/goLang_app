@@ -14,3 +14,16 @@ func getCat(req *http.Request) (int, any) {
 		return http.StatusNotFound, "Cat not found"
 	}
 }
+
+func deleteCat(req *http.Request) (int, any) {
+	catID := req.PathValue("catId")
+	Logger.Info("Getting the cat: ", catID)
+
+	if _, found := catsDatabase[catID]; found {
+		delete(catsDatabase, catID)
+		return http.StatusNoContent, nil
+	} else {
+		Logger.Info("Cat not found")
+		return http.StatusNotFound, "Cat not found"
+	}
+}
