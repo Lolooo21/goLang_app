@@ -66,3 +66,17 @@ Done following [Swagger official doc](https://github.com/swagger-api/swagger-ui/
 ## Regenerate the OpenApi file
 
 The Swagger UI consumes only JSON api specification, the function `yml2json` has been made to convert the YML format into JSON.
+
+
+
+###Docker
+
+``docker build -t backend:2 .``  créer une image
+``docker run -p 4321:8080 backend:2 `` lancer le container  
+
+`echo TOKEN_GIT_CLASSIC | docker login ghcr.io -u Lolooo21 --password-stdin` connexion ghcr.io
+
+``docker tag backend:2 ghcr.io/lolooo21/backend:1.0.0`` dans l'espace général de gitHub
+``docker tag backend:2 ghcr.io/golang_app/backend:1.0.1`` dans l'espace du repository
+
+``docker push ghcr.io/golang_app/backend:1.0.1``
