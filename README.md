@@ -80,3 +80,18 @@ The Swagger UI consumes only JSON api specification, the function `yml2json` has
 ``docker tag backend:2 ghcr.io/golang_app/backend:1.0.1`` dans l'espace du repository
 
 ``docker push ghcr.io/golang_app/backend:1.0.1``
+
+
+
+# 🧪 Tests unitaires Go - Middleware & Routes
+
+Cette suite de tests vérifie le bon fonctionnement des middlewares (`logReq`, `makeHandlerFunc`) et de l’application (`newApp`).  
+Contrairement aux tests d’intégration des APIs (`apitests`), ceux-ci s’exécutent **sans serveur externe**, uniquement avec `httptest`.
+
+---
+
+## ⚡ Lancer les tests
+
+```bash
+go test ./ -v
+go test -run TestMakeHandlerFunc ./ -v
