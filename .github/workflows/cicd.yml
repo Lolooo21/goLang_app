@@ -95,7 +95,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: write on fileText
         run: |
-          git checkout deploy_dev
+          git fetch origin deploy_dev || true
+          git checkout deploy_dev || git checkout -b deploy_dev
           git config --global user.email "lolooo_21@hotmail.fr"
           git config --global user.name "Lolooo21"
           echo "Deploying version ${{needs.versioning.outputs.version}}" >> $GITHUB_STEP_SUMMARY
