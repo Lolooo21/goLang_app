@@ -13,12 +13,16 @@ jobs:
       imageName: ${{ steps.versioning.outputs.imageName }}
 
     steps:
+      - name: Prepare repository
+        run: |
+          repo_name=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "name=$repo_name" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v4
       - name: Compute versions
         id: versioning
         run: |
           version=$(git rev-parse --short HEAD)
-          imageName=ghcr.io/${{github.repository}}:$version
+          imageName=ghcr.io/$repo_name:$version
           echo "version=$version" >> $GITHUB_OUTPUT
           echo "imageName=$imageName" >> $GITHUB_OUTPUT
           echo "the image name :'$imageName'"
