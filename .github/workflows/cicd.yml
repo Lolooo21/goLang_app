@@ -103,7 +103,7 @@ jobs:
           echo "image=${{needs.versioning.outputs.imageName}}" >> ./version.txt
           git add ./version.txt
           git commit -m "Deploy version ${{needs.versioning.outputs.version}}"
-          git push -f origin deploy_dev_1
+          git push -f origin deploy_dev
           cat ./version.txt
 
 
