@@ -50,7 +50,7 @@ jobs:
 
       - run: echo "${{secrets.GITHUB_TOKEN}}" | docker login ghcr.io -u "${{github.actor}}" --password-stdin
 
-      - run: docker build -t backend:${{needs.versioning.outputs.imageName}} .
+      - run: docker build -t backend:${{needs.versioning.outputs.version}} .
 
       - run: docker tag backend:${{needs.versioning.outputs.version}} ghcr.io/${{github.repository}}:${{needs.versioning.outputs.version}}
 
