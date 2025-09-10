@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unit tests
-        run: go test ./app_test.go -v
+        run: go test -run TestMakeHandlerFunc ./ -v
 
 
   build-and-push:
