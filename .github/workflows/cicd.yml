@@ -99,6 +99,7 @@ jobs:
           echo "Deploying version ${{needs.versioning.outputs.version}}" >> $GITHUB_STEP_SUMMARY
           echo "version=${{needs.versioning.outputs.version}}" >> ./version.txt
           echo "image=${{needs.versioning.outputs.imageName}}" >> ./version.txt
+          cat ./version.txt
 
 
 
