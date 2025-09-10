@@ -2,7 +2,8 @@
 name: Build the app docker image
 
 on:
-  push
+  push:
+    branches: [ main , deploy_dev]
 
 jobs:
   versioning:
@@ -80,4 +81,24 @@ jobs:
         run: |
           echo "## 🌐 API tests using ${{needs.v.outputs.imageName}}" >> $GITHUB_STEP_SUMMARY
           go test ./test/apitests -tags=api-test
-          
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: [ api-tests ]
+    permissions:
+      packages: write
+      contents: write
+    if : ${{ github.ref == 'refs/heads/deploy_dev' }}
+
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: write on fileText
+        run: |
+          echo "Deploying version ${{needs.versioning.outputs.version}}" >> $GITHUB_STEP_SUMMARY
+          echo "version=${{needs.versioning.outputs.version}}" >> ./version.txt
+          echo "image=${{needs.versioning.outputs.imageName}}" >> ./version.txt
+
+
+
