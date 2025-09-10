@@ -2,8 +2,7 @@
 name: Build the app docker image
 
 on:
-  push:
-    branches: [ main , deploy_dev]
+  push
 
 jobs:
   versioning:
