@@ -89,16 +89,20 @@ jobs:
     permissions:
       packages: write
       contents: write
-    if : ${{ github.ref == 'refs/heads/master' }}
 
+    if: ${{ github.ref == 'refs/heads/master' }}
 
     steps:
       - uses: actions/checkout@v4
       - name: write on fileText
         run: |
+          git checkout --orphan deploy_dev_1
           echo "Deploying version ${{needs.versioning.outputs.version}}" >> $GITHUB_STEP_SUMMARY
           echo "version=${{needs.versioning.outputs.version}}" >> ./version.txt
           echo "image=${{needs.versioning.outputs.imageName}}" >> ./version.txt
+          git add ./version.txt
+          git commit -m "Deploy version ${{needs.versioning.outputs.version}}"
+          git push -f origin deploy_dev_1
           cat ./version.txt
 
 
