@@ -7,6 +7,7 @@ on:
 jobs:
   versioning:
     runs-on: ubuntu-latest
+    name: Compute versions
     outputs:
       version: ${{ steps.versioning.outputs.version }}
       imageName: ${{ steps.versioning.outputs.imageName }}
@@ -24,36 +25,57 @@ jobs:
           echo "## 🔖 New version '$version'" >> $GITHUB_STEP_SUMMARY
           echo "## 📦 Image '$imageName'" >> $GITHUB_STEP_SUMMARY
 
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    needs: [ versioning ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unit tests
+        run: go test ./...
+
+
   build-and-push:
     runs-on: ubuntu-latest
+    name: Build and push docker image
     permissions:
       contents: read
       packages: write
 
-    needs: [versioning]
+    needs: [ versioning, unit-tests ]
 
     steps:
       - uses: actions/checkout@v4
-        
+
       - run: echo "${{secrets.GITHUB_TOKEN}}" | docker login ghcr.io -u "${{github.actor}}" --password-stdin
-   
+
+      - run: docker build -t backend:${{needs.versioning.outputs.imageName}} .
+
+      - run: docker tag backend:${{needs.versioning.outputs.imageName}} ghcr.io/${{github.repository}}:${{needs.versioning.outputs.imageName}}
+
+      - run: docker push ghcr.io/${{github.repository}}:${{needs.versioning.outputs.imageName}}
+
+
   
   api-tests:
     runs-on: ubuntu-latest
-    needs: [build-and-push, versioning]
+    needs: [ build-and-push, versioning ]
 
     # Our API server, running in the background
-    # services:
-    #   backend:
-    #     image: ${{needs.versioning.outputs.imageName}}
-    #     credentials:
-    #       username: ${{github.actor}}
-    #       password: ${{secrets.GITHUB_TOKEN}}
-    #     ports:
-    #     - 8080:8080
+    services:
+      backend:
+        image: ${{needs.versioning.outputs.imageName}}
+        credentials:
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+        ports:
+          - 8080:8080
 
     steps:
       - uses: actions/checkout@v4
       - name: API tests
         run: |
           echo "## 🌐 API tests using ${{needs.v.outputs.imageName}}" >> $GITHUB_STEP_SUMMARY
+          go test ./test/apitests -tags=api-test
+          
