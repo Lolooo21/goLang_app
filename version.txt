@@ -1,2 +1,4 @@
 version=
 image=
+version=4e6bba3
+image=ghcr.io/lolooo21/golang_app:4e6bba3
